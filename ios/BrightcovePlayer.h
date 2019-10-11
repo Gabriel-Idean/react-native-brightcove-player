@@ -12,6 +12,9 @@
 #import <React/RCTBridge.h>
 #import <React/UIView+React.h>
 
+@import BrightcoveIMA;
+@import GoogleInteractiveMediaAds;
+
 @interface BrightcovePlayer : UIView<BCOVOfflineVideoManagerDelegate>
 
 @property (nonatomic) BCOVPlaybackService *playbackService;
@@ -26,6 +29,7 @@
 @property (nonatomic) float targetPlaybackRate;
 @property (nonatomic) BOOL playbackServiceDirty;
 
+@property (nonatomic, copy) NSString *IMAUrl;
 @property (nonatomic, copy) NSString *referenceId;
 @property (nonatomic, copy) NSString *videoId;
 @property (nonatomic, copy) NSString *videoToken;

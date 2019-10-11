@@ -117,6 +117,7 @@ BrightcovePlayer.propTypes = {
   referenceId: PropTypes.string,
   videoId: PropTypes.string,
   videoToken: PropTypes.string,
+  IMAUrl: PropTypes.string,
   autoPlay: PropTypes.bool,
   play: PropTypes.bool,
   fullscreen: PropTypes.bool,

@@ -1,11 +1,11 @@
-#import "BrightcovePlayer.h"
+#import "BrightcovePlayerIMA.h"
 #import "BrightcovePlayerOfflineVideoManager.h"
 
-@interface BrightcovePlayer () <BCOVPlaybackControllerDelegate, BCOVPUIPlayerViewDelegate>
+@interface BrightcovePlayerIMA () <BCOVPlaybackControllerDelegate, BCOVPUIPlayerViewDelegate>
 
 @end
 
-@implementation BrightcovePlayer
+@implementation BrightcovePlayerIMA
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -15,20 +15,53 @@
 }
 
 - (void)setup {
+    /* added */
+    NSString * kViewControllerIMAPublisherID = @"insertyourpidhere";
+    NSString * kViewControllerIMALanguage = @"en";
+    NSLog(@"%@ ::::: IMA URL", _IMAUrl);
+    IMASettings *imaSettings = [[IMASettings alloc] init];
+    imaSettings.ppid = kViewControllerIMAPublisherID;
+    imaSettings.language = kViewControllerIMALanguage;
+    
+    IMAAdsRenderingSettings *renderSettings = [[IMAAdsRenderingSettings alloc] init];
+    renderSettings.webOpenerPresentingController = (UIViewController*)[self nextResponder];
+    renderSettings.webOpenerDelegate = self;
+    
+    BCOVIMAAdsRequestPolicy *adsRequestPolicy = [BCOVIMAAdsRequestPolicy adsRequestPolicyWithVMAPAdTagUrl:@"http://data.apn.co.nz/apnnz/tserver/SITE=NZH/SIZE=PREROLL/VURL=SKIPVAST/VIEWID=123456789/RANDOM=987654321"];
+    
+    _playbackController = [BCOVPlayerSDKManager.sharedManager createIMAPlaybackControllerWithSettings:imaSettings adsRenderingSettings:renderSettings adsRequestPolicy:adsRequestPolicy adContainer:self companionSlots:nil viewStrategy:nil];
+    
+    _playbackController.delegate = self;
+    _playbackController.autoPlay = NO;
+    _playbackController.autoAdvance = YES;
+    
+    _playerView = [[BCOVPUIPlayerView alloc] initWithPlaybackController:self.playbackController options:nil controlsView:[BCOVPUIBasicControlView basicControlViewWithVODLayout] ];
+    _playerView.delegate = self;
+    _playerView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    _playerView.backgroundColor = UIColor.blackColor;
+    
+    _targetVolume = 1.0;
+    _autoPlay = NO;
+    
+    [self addSubview:_playerView];
+    
+    /*
      _playbackController = [BCOVPlayerSDKManager.sharedManager createPlaybackController];
      _playbackController.delegate = self;
      _playbackController.autoPlay = NO;
      _playbackController.autoAdvance = YES;
-    
+     
      _playerView = [[BCOVPUIPlayerView alloc] initWithPlaybackController:self.playbackController options:nil controlsView:[BCOVPUIBasicControlView basicControlViewWithVODLayout] ];
      _playerView.delegate = self;
      _playerView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
      _playerView.backgroundColor = UIColor.blackColor;
-    
+     
      _targetVolume = 1.0;
      _autoPlay = NO;
-    
+     
      [self addSubview:_playerView];
+     
+     */
 }
 
 - (void)setupService {

@@ -1,20 +1,22 @@
-#import "BrightcovePlayerManager.h"
-#import "BrightcovePlayer.h"
+#import "BrightcovePlayerIMAManager.h"
+#import "BrightcovePlayerIMA.h"
 #import <React/RCTUIManager.h>
 
-@implementation BrightcovePlayerManager
+@implementation BrightcovePlayerIMAManager
 
 RCT_EXPORT_MODULE();
 
 @synthesize bridge = _bridge;
 
 - (UIView *)view {
-    return [[BrightcovePlayer alloc] init];
+    return [[BrightcovePlayerIMA alloc] init];
 }
 
 - (dispatch_queue_t)methodQueue {
     return _bridge.uiManager.methodQueue;
 }
+
+RCT_EXPORT_VIEW_PROPERTY(IMAUrl, NSString);
 
 RCT_EXPORT_VIEW_PROPERTY(policyKey, NSString);
 RCT_EXPORT_VIEW_PROPERTY(accountId, NSString);
@@ -40,8 +42,8 @@ RCT_EXPORT_VIEW_PROPERTY(onExitFullscreen, RCTDirectEventBlock);
 
 RCT_EXPORT_METHOD(seekTo:(nonnull NSNumber *)reactTag seconds:(nonnull NSNumber *)seconds) {
     [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
-        BrightcovePlayer *player = (BrightcovePlayer*)viewRegistry[reactTag];
-        if ([player isKindOfClass:[BrightcovePlayer class]]) {
+        BrightcovePlayerIMA *player = (BrightcovePlayerIMA*)viewRegistry[reactTag];
+        if ([player isKindOfClass:[BrightcovePlayerIMA class]]) {
             [player seekTo:seconds];
         }
     }];
@@ -49,8 +51,8 @@ RCT_EXPORT_METHOD(seekTo:(nonnull NSNumber *)reactTag seconds:(nonnull NSNumber 
 
 RCT_EXPORT_METHOD(dispose:(nonnull NSNumber *)reactTag) {
     [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
-        BrightcovePlayer *player = (BrightcovePlayer*)viewRegistry[reactTag];
-        if ([player isKindOfClass:[BrightcovePlayer class]]) {
+        BrightcovePlayerIMA *player = (BrightcovePlayerIMA*)viewRegistry[reactTag];
+        if ([player isKindOfClass:[BrightcovePlayerIMA class]]) {
             [player dispose];
         }
     }];

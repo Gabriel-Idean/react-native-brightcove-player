@@ -28,8 +28,17 @@ export type BrightcovePlayerProps = {
   style?: ViewStyle;
 };
 
+export type BrightcovePlayerIMAProps = BrightcovePlayerProps & { IMAUrl?: string }
+
 export class BrightcovePlayer extends React.Component<
   BrightcovePlayerProps,
+  {}
+> {
+  seekTo(position: number): {};
+}
+
+export class BrightcovePlayerIMA extends React.Component<
+  BrightcovePlayerIMAProps,
   {}
 > {
   seekTo(position: number): {};

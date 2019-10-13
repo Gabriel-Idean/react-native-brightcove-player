@@ -6,12 +6,12 @@ import ReactNative, {
   requireNativeComponent,
   UIManager,
   View,
-  ViewPropTypes
+  ViewPropTypes,
 } from 'react-native';
 
-class BrightcovePlayer extends Component {
+class BrightcovePlayerIMA extends Component {
   state = {
-    androidFullscreen: false
+    androidFullscreen: false,
   };
 
   setNativeProps = nativeProps => {
@@ -22,16 +22,16 @@ class BrightcovePlayer extends Component {
 
   componentWillUnmount = Platform.select({
     ios: function() {
-      NativeModules.BrightcovePlayerManager.dispose(
-        ReactNative.findNodeHandle(this)
+      NativeModules.BrightcovePlayerIMAManager.dispose(
+        ReactNative.findNodeHandle(this),
       );
     },
-    android: function() {}
+    android: function() {},
   });
 
   render() {
     return (
-      <NativeBrightcovePlayer
+      <NativeBrightcovePlayerIMA
         ref={e => (this._root = e)}
         {...this.props}
         style={[
@@ -79,7 +79,9 @@ class BrightcovePlayer extends Component {
             typeof event.nativeEvent.fullscreen === 'boolean'
               ? event.nativeEvent.fullscreen
               : !this.state.androidFullscreen;
-          if (fullscreen === this.state.androidFullscreen) return;
+          if (fullscreen === this.state.androidFullscreen) {
+            return;
+          }
           this.setState({ androidFullscreen: fullscreen });
           if (fullscreen) {
             this.props.onEnterFullscreen &&
@@ -94,29 +96,30 @@ class BrightcovePlayer extends Component {
   }
 }
 
-BrightcovePlayer.prototype.seekTo = Platform.select({
+BrightcovePlayerIMA.prototype.seekTo = Platform.select({
   ios: function(seconds) {
-    NativeModules.BrightcovePlayerManager.seekTo(
+    NativeModules.BrightcovePlayerIMAManager.seekTo(
       ReactNative.findNodeHandle(this),
-      seconds
+      seconds,
     );
   },
   android: function(seconds) {
     UIManager.dispatchViewManagerCommand(
       ReactNative.findNodeHandle(this._root),
-      UIManager.BrightcovePlayer.Commands.seekTo,
-      [seconds]
+      UIManager.BrightcovePlayerIMA.Commands.seekTo,
+      [seconds],
     );
-  }
+  },
 });
 
-BrightcovePlayer.propTypes = {
+BrightcovePlayerIMA.propTypes = {
   ...(ViewPropTypes || View.propTypes),
   policyKey: PropTypes.string,
   accountId: PropTypes.string,
   referenceId: PropTypes.string,
   videoId: PropTypes.string,
   videoToken: PropTypes.string,
+  IMAUrl: PropTypes.string,
   autoPlay: PropTypes.bool,
   play: PropTypes.bool,
   fullscreen: PropTypes.bool,
@@ -132,14 +135,14 @@ BrightcovePlayer.propTypes = {
   onChangeDuration: PropTypes.func,
   onUpdateBufferProgress: PropTypes.func,
   onEnterFullscreen: PropTypes.func,
-  onExitFullscreen: PropTypes.func
+  onExitFullscreen: PropTypes.func,
 };
 
-BrightcovePlayer.defaultProps = {};
+BrightcovePlayerIMA.defaultProps = {};
 
-const NativeBrightcovePlayer = requireNativeComponent(
-  'BrightcovePlayer',
-  BrightcovePlayer
+const NativeBrightcovePlayerIMA = requireNativeComponent(
+  'BrightcovePlayerIMA',
+  BrightcovePlayerIMA,
 );
 
-module.exports = BrightcovePlayer;
+module.exports = BrightcovePlayerIMA;

@@ -10,6 +10,9 @@ import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +45,11 @@ public class BrightcovePlayerIMAManager extends SimpleViewManager<BrightcovePlay
     public BrightcovePlayerIMAView createViewInstance(ThemedReactContext ctx) {
         BrightcovePlayerIMAView BrightcovePlayerIMAView = new BrightcovePlayerIMAView(ctx, applicationContext);
         return BrightcovePlayerIMAView;
+    }
+
+    @ReactProp(name = "settings")
+    public void setSettings(BrightcovePlayerIMAView view, ReadableMap settings) {
+        view.setSettings(settings);
     }
 
     @ReactProp(name = "policyKey")

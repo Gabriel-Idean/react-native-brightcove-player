@@ -21,6 +21,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
@@ -36,6 +37,13 @@ import com.google.android.exoplayer2.trackselection.FixedTrackSelection;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 
+import com.brightcove.ima.GoogleIMAComponent;
+import com.brightcove.ima.GoogleIMAEventType;
+import com.google.ads.interactivemedia.v3.api.AdDisplayContainer;
+import com.google.ads.interactivemedia.v3.api.AdsManager;
+import com.google.ads.interactivemedia.v3.api.AdsRequest;
+import com.google.ads.interactivemedia.v3.api.ImaSdkFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +52,7 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
     private ReactApplicationContext applicationContext;
     private BrightcoveExoPlayerVideoView playerVideoView;
     private BrightcoveMediaController mediaController;
+    private ReadableMap settings;
     private String policyKey;
     private String accountId;
     private String videoId;
@@ -63,6 +72,9 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.applicationContext = applicationContext;
         this.applicationContext.addLifecycleEventListener(this);
         this.setBackgroundColor(Color.BLACK);
+
+        String IMAUrl = settings != null && settings.hasKey("IMAUrl") ?
+        settings.getString("IMAUrl") : "";
 
         this.playerVideoView = new BrightcoveExoPlayerVideoView(this.context);
         this.addView(this.playerVideoView);
@@ -164,6 +176,10 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
                 reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(BrightcovePlayerIMAView.this.getId(), BrightcovePlayerIMAManager.EVENT_UPDATE_BUFFER_PROGRESS, event);
             }
         });
+    }
+
+    public void setSettings(ReadableMap settings) {
+        this.settings = settings;
     }
 
     public void setPolicyKey(String policyKey) {

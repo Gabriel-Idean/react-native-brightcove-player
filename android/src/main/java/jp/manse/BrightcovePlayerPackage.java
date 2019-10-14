@@ -18,6 +18,7 @@ public class BrightcovePlayerPackage implements ReactPackage {
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         return Arrays.<ViewManager>asList(
                 new BrightcovePlayerManager(reactContext),
+                new BrightcovePlayerIMAManager(reactContext),
                 new BrightcovePlayerPosterManager(reactContext)
         );
     }

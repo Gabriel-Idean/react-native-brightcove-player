@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class BrightcovePlayerManager extends SimpleViewManager<BrightcovePlayerView> {
-    public static final String REACT_CLASS = "BrightcovePlayer";
+public class BrightcovePlayerIMAManager extends SimpleViewManager<BrightcovePlayerIMAView> {
+    public static final String REACT_CLASS = "BrightcovePlayerIMA";
     public static final int COMMAND_SEEK_TO = 1;
     public static final String EVENT_READY = "ready";
     public static final String EVENT_PLAY = "play";
@@ -28,7 +28,7 @@ public class BrightcovePlayerManager extends SimpleViewManager<BrightcovePlayerV
 
     private ReactApplicationContext applicationContext;
 
-    public BrightcovePlayerManager(ReactApplicationContext context) {
+    public BrightcovePlayerIMAManager(ReactApplicationContext context) {
         super();
         this.applicationContext = context;
     }
@@ -39,68 +39,68 @@ public class BrightcovePlayerManager extends SimpleViewManager<BrightcovePlayerV
     }
 
     @Override
-    public BrightcovePlayerView createViewInstance(ThemedReactContext ctx) {
-        BrightcovePlayerView brightcovePlayerView = new BrightcovePlayerView(ctx, applicationContext);
-        return brightcovePlayerView;
+    public BrightcovePlayerIMAView createViewInstance(ThemedReactContext ctx) {
+        BrightcovePlayerIMAView BrightcovePlayerIMAView = new BrightcovePlayerIMAView(ctx, applicationContext);
+        return BrightcovePlayerIMAView;
     }
 
     @ReactProp(name = "policyKey")
-    public void setPolicyKey(BrightcovePlayerView view, String policyKey) {
+    public void setPolicyKey(BrightcovePlayerIMAView view, String policyKey) {
         view.setPolicyKey(policyKey);
     }
 
     @ReactProp(name = "accountId")
-    public void setAccountId(BrightcovePlayerView view, String accountId) {
+    public void setAccountId(BrightcovePlayerIMAView view, String accountId) {
         view.setAccountId(accountId);
     }
 
     @ReactProp(name = "videoId")
-    public void setVideoId(BrightcovePlayerView view, String videoId) {
+    public void setVideoId(BrightcovePlayerIMAView view, String videoId) {
         view.setVideoId(videoId);
     }
 
     @ReactProp(name = "referenceId")
-    public void setReferenceId(BrightcovePlayerView view, String referenceId) {
+    public void setReferenceId(BrightcovePlayerIMAView view, String referenceId) {
         view.setReferenceId(referenceId);
     }
 
     @ReactProp(name = "videoToken")
-    public void setVideoToken(BrightcovePlayerView view, String videoToken) {
+    public void setVideoToken(BrightcovePlayerIMAView view, String videoToken) {
         view.setVideoToken(videoToken);
     }
 
     @ReactProp(name = "autoPlay")
-    public void setAutoPlay(BrightcovePlayerView view, boolean autoPlay) {
+    public void setAutoPlay(BrightcovePlayerIMAView view, boolean autoPlay) {
         view.setAutoPlay(autoPlay);
     }
 
     @ReactProp(name = "play")
-    public void setPlay(BrightcovePlayerView view, boolean play) {
+    public void setPlay(BrightcovePlayerIMAView view, boolean play) {
         view.setPlay(play);
     }
 
     @ReactProp(name = "disableDefaultControl")
-    public void setDefaultControlDisabled(BrightcovePlayerView view, boolean disableDefaultControl) {
+    public void setDefaultControlDisabled(BrightcovePlayerIMAView view, boolean disableDefaultControl) {
         view.setDefaultControlDisabled(disableDefaultControl);
     }
 
     @ReactProp(name = "volume")
-    public void setVolume(BrightcovePlayerView view, float volume) {
+    public void setVolume(BrightcovePlayerIMAView view, float volume) {
         view.setVolume(volume);
     }
 
     @ReactProp(name = "bitRate")
-    public void setBitRate(BrightcovePlayerView view, float bitRate) {
+    public void setBitRate(BrightcovePlayerIMAView view, float bitRate) {
         view.setBitRate((int)bitRate);
     }
 
     @ReactProp(name = "playbackRate")
-    public void setPlaybackRate(BrightcovePlayerView view, float playbackRate) {
+    public void setPlaybackRate(BrightcovePlayerIMAView view, float playbackRate) {
         view.setPlaybackRate(playbackRate);
     }
 
     @ReactProp(name = "fullscreen")
-    public void setFullscreen(BrightcovePlayerView view, boolean fullscreen) {
+    public void setFullscreen(BrightcovePlayerIMAView view, boolean fullscreen) {
         view.setFullscreen(fullscreen);
     }
 
@@ -113,7 +113,7 @@ public class BrightcovePlayerManager extends SimpleViewManager<BrightcovePlayerV
     }
 
     @Override
-    public void receiveCommand(BrightcovePlayerView view, int commandType, @Nullable ReadableArray args) {
+    public void receiveCommand(BrightcovePlayerIMAView view, int commandType, @Nullable ReadableArray args) {
         Assertions.assertNotNull(view);
         Assertions.assertNotNull(args);
         switch (commandType) {

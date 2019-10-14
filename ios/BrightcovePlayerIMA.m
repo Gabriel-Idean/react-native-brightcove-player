@@ -9,16 +9,16 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        [self setup];
+//        [self setup];
     }
     return self;
 }
 
-- (void)setup {
+- (void)setupWithSetting:(NSDictionary*)setting {
     /* added */
     NSString * kViewControllerIMAPublisherID = @"insertyourpidhere";
     NSString * kViewControllerIMALanguage = @"en";
-    NSLog(@"%@ ::::: IMA URL", _IMAUrl);
+    
     IMASettings *imaSettings = [[IMASettings alloc] init];
     imaSettings.ppid = kViewControllerIMAPublisherID;
     imaSettings.language = kViewControllerIMALanguage;
@@ -27,7 +27,8 @@
     renderSettings.webOpenerPresentingController = (UIViewController*)[self nextResponder];
     renderSettings.webOpenerDelegate = self;
     
-    BCOVIMAAdsRequestPolicy *adsRequestPolicy = [BCOVIMAAdsRequestPolicy adsRequestPolicyWithVMAPAdTagUrl:@"http://data.apn.co.nz/apnnz/tserver/SITE=NZH/SIZE=PREROLL/VURL=SKIPVAST/VIEWID=123456789/RANDOM=987654321"];
+    NSString *IMAUrl = [setting objectForKey:@"IMAUrl"];
+    BCOVIMAAdsRequestPolicy *adsRequestPolicy = [BCOVIMAAdsRequestPolicy adsRequestPolicyWithVMAPAdTagUrl:IMAUrl];
     
     _playbackController = [BCOVPlayerSDKManager.sharedManager createIMAPlaybackControllerWithSettings:imaSettings adsRenderingSettings:renderSettings adsRequestPolicy:adsRequestPolicy adContainer:self companionSlots:nil viewStrategy:nil];
     

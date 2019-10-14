@@ -29,7 +29,7 @@
 @property (nonatomic) float targetPlaybackRate;
 @property (nonatomic) BOOL playbackServiceDirty;
 
-@property (nonatomic, copy) NSString *IMAUrl;
+@property (nonatomic, copy) NSDictionary *setting;
 @property (nonatomic, copy) NSString *referenceId;
 @property (nonatomic, copy) NSString *videoId;
 @property (nonatomic, copy) NSString *videoToken;
@@ -45,7 +45,8 @@
 @property (nonatomic, copy) RCTDirectEventBlock onEnterFullscreen;
 @property (nonatomic, copy) RCTDirectEventBlock onExitFullscreen;
 
+-(void) setupWithSetting:(NSString*)setting;
 -(void) seekTo:(NSNumber *)time;
--(void)dispose;
+-(void) dispose;
 
 @end

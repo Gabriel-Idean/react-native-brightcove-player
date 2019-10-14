@@ -28,7 +28,11 @@ export type BrightcovePlayerProps = {
   style?: ViewStyle;
 };
 
-export type BrightcovePlayerIMAProps = BrightcovePlayerProps & { IMAUrl?: string }
+type IMASetting = {
+  IMAUrl?: string
+};
+
+export type BrightcovePlayerIMAProps = BrightcovePlayerProps & IMASetting
 
 export class BrightcovePlayer extends React.Component<
   BrightcovePlayerProps,

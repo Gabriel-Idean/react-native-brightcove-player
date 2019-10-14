@@ -14,7 +14,7 @@
     return self;
 }
 
-- (void)setupWithSetting:(NSDictionary*)setting {
+- (void)setupWithSettings:(NSDictionary*)settings {
     /* added */
     NSString * kViewControllerIMAPublisherID = @"insertyourpidhere";
     NSString * kViewControllerIMALanguage = @"en";
@@ -27,7 +27,7 @@
     renderSettings.webOpenerPresentingController = (UIViewController*)[self nextResponder];
     renderSettings.webOpenerDelegate = self;
     
-    NSString *IMAUrl = [setting objectForKey:@"IMAUrl"];
+    NSString *IMAUrl = [settings objectForKey:@"IMAUrl"];
     BCOVIMAAdsRequestPolicy *adsRequestPolicy = [BCOVIMAAdsRequestPolicy adsRequestPolicyWithVMAPAdTagUrl:IMAUrl];
     
     _playbackController = [BCOVPlayerSDKManager.sharedManager createIMAPlaybackControllerWithSettings:imaSettings adsRenderingSettings:renderSettings adsRequestPolicy:adsRequestPolicy adContainer:self companionSlots:nil viewStrategy:nil];

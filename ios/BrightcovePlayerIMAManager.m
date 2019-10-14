@@ -38,9 +38,9 @@ RCT_EXPORT_VIEW_PROPERTY(onUpdateBufferProgress, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onEnterFullscreen, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onExitFullscreen, RCTDirectEventBlock);
 
-RCT_CUSTOM_VIEW_PROPERTY(setting, NSDictionary, BrightcovePlayerIMA) {
+RCT_CUSTOM_VIEW_PROPERTY(settings, NSDictionary, BrightcovePlayerIMA) {
     if ([json isKindOfClass:[NSDictionary class]]) {
-        [view setupWithSetting:json];
+        [view setupWithSettings:json];
     }
 }
 RCT_EXPORT_METHOD(seekTo:(nonnull NSNumber *)reactTag seconds:(nonnull NSNumber *)seconds) {

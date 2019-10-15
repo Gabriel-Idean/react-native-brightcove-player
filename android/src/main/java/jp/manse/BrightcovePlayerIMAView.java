@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 
+import android.text.format.DateUtils;
+
 import com.brightcove.player.display.ExoPlayerVideoDisplayComponent;
 import com.brightcove.player.edge.Catalog;
 import com.brightcove.player.edge.OfflineCatalog;
@@ -15,8 +17,10 @@ import com.brightcove.player.event.EventEmitter;
 import com.brightcove.player.event.EventListener;
 import com.brightcove.player.event.EventType;
 import com.brightcove.player.mediacontroller.BrightcoveMediaController;
+import com.brightcove.player.mediacontroller.BrightcoveSeekBar;
 import com.brightcove.player.model.Video;
 import com.brightcove.player.view.BrightcoveExoPlayerVideoView;
+import com.brightcove.player.view.BaseVideoView;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -46,6 +50,8 @@ import com.google.ads.interactivemedia.v3.api.ImaSdkFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BrightcovePlayerIMAView extends RelativeLayout implements LifecycleEventListener {
     private ThemedReactContext context;
@@ -65,6 +71,13 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
     private int bitRate = 0;
     private float playbackRate = 1;
     private static final TrackSelection.Factory FIXED_FACTORY = new FixedTrackSelection.Factory();
+    
+    private final String TAG = this.getClass().getSimpleName();
+    private final EventEmitter eventEmitter;
+    private GoogleIMAComponent googleIMAComponent;
+    private String adRulesURL = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=";
+    private final BrightcoveExoPlayerVideoView testView;
+
 
     public BrightcovePlayerIMAView(ThemedReactContext context, ReactApplicationContext applicationContext) {
         super(context);
@@ -73,10 +86,8 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.applicationContext.addLifecycleEventListener(this);
         this.setBackgroundColor(Color.BLACK);
 
-        String IMAUrl = settings != null && settings.hasKey("IMAUrl") ?
-        settings.getString("IMAUrl") : "";
-
         this.playerVideoView = new BrightcoveExoPlayerVideoView(this.context);
+
         this.addView(this.playerVideoView);
         this.playerVideoView.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         this.playerVideoView.finishInitialization();
@@ -85,7 +96,16 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.requestLayout();
         ViewCompat.setTranslationZ(this, 9999);
 
-        EventEmitter eventEmitter = this.playerVideoView.getEventEmitter();
+        testView = this.playerVideoView;
+
+        // *** This method call is optional *** //
+        setupAdMarkers(this.playerVideoView);
+
+        eventEmitter = this.playerVideoView.getEventEmitter();
+
+        // Use a procedural abstraction to setup the Google IMA SDK via the plugin.
+        setupGoogleIMA();
+
         eventEmitter.on(EventType.VIDEO_SIZE_KNOWN, new EventListener() {
             @Override
             public void processEvent(Event e) {
@@ -180,6 +200,11 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
 
     public void setSettings(ReadableMap settings) {
         this.settings = settings;
+
+        // Use a procedural abstraction to setup the Google IMA SDK via the plugin.
+        // setupGoogleIMA();
+        // setupAdMarkers(this.playerVideoView);
+
     }
 
     public void setPolicyKey(String policyKey) {
@@ -358,6 +383,100 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         int topOffset = (viewHeight - surfaceHeight) / 2;
         surfaceView.layout(leftOffset, topOffset, leftOffset + surfaceWidth, topOffset + surfaceHeight);
     }
+
+    /*
+      This methods show how to the the Google IMA AdsManager, get the cue points and add the markers
+      to the Brightcove Seek Bar.
+     */
+    private void setupAdMarkers(BaseVideoView videoView) {
+        final BrightcoveMediaController mediaController = new BrightcoveMediaController(this.playerVideoView);
+
+        // Add "Ad Markers" where the Ads Manager says ads will appear.
+        mediaController.addListener(GoogleIMAEventType.ADS_MANAGER_LOADED, new EventListener() {
+            @Override
+            public void processEvent(Event event) {
+                AdsManager manager = (AdsManager) event.properties.get("adsManager");
+                List<Float> cuepoints = manager.getAdCuePoints();
+                for (int i = 0; i < cuepoints.size(); i++) {
+                    Float cuepoint = cuepoints.get(i);
+                    BrightcoveSeekBar brightcoveSeekBar = mediaController.getBrightcoveSeekBar();
+                    // If cuepoint is negative it means it is a POST ROLL.
+                    int markerTime = cuepoint < 0 ? brightcoveSeekBar.getMax() : (int) (cuepoint * DateUtils.SECOND_IN_MILLIS);
+                        mediaController.getBrightcoveSeekBar().addMarker(markerTime);
+
+                }
+            }
+        });
+        videoView.setMediaController(mediaController);
+
+    }
+    
+    /**
+     * Setup the Brightcove IMA Plugin.
+     */
+    private void setupGoogleIMA() {
+        // Establish the Google IMA SDK factory instance.
+        final ImaSdkFactory sdkFactory = ImaSdkFactory.getInstance();
+
+        // Enable logging up ad start.
+        eventEmitter.on(EventType.AD_STARTED, new EventListener() {
+            @Override
+            public void processEvent(Event event) {
+                Log.v(TAG, event.getType());
+            }
+        });
+
+        // Enable logging any failed attempts to play an ad.
+        eventEmitter.on(GoogleIMAEventType.DID_FAIL_TO_PLAY_AD, new EventListener() {
+            @Override
+            public void processEvent(Event event) {
+                Log.v(TAG, event.getType());
+            }
+        });
+
+        // Enable Logging upon ad completion.
+        eventEmitter.on(EventType.AD_COMPLETED, new EventListener() {
+            @Override
+            public void processEvent(Event event) {
+                Log.v(TAG, event.getType());
+            }
+        });
+
+        // Set up a listener for initializing AdsRequests. The Google
+        // IMA plugin emits an ad request event as a result of
+        // initializeAdsRequests() being called.
+        eventEmitter.on(GoogleIMAEventType.ADS_REQUEST_FOR_VIDEO, new EventListener() {
+            @Override
+            public void processEvent(Event event) {
+                // Create a container object for the ads to be presented.
+                AdDisplayContainer container = sdkFactory.createAdDisplayContainer();
+                container.setAdContainer(testView);
+                container.setPlayer(googleIMAComponent.getVideoAdPlayer());
+
+                String IMAUrl = settings != null && settings.hasKey("IMAUrl") ?
+                settings.getString("IMAUrl") : "";
+                Log.v(TAG, IMAUrl);
+
+                // Build an ads request object and point it to the ad
+                // display container created above.
+                AdsRequest adsRequest = sdkFactory.createAdsRequest();
+                adsRequest.setAdTagUrl(adRulesURL);
+                adsRequest.setAdDisplayContainer(container);
+
+                ArrayList<AdsRequest> adsRequests = new ArrayList<AdsRequest>(1);
+                adsRequests.add(adsRequest);
+
+                // Respond to the event with the new ad requests.
+                event.properties.put(GoogleIMAComponent.ADS_REQUESTS, adsRequests);
+                eventEmitter.respond(event);
+            }
+        });
+
+        // Create the Brightcove IMA Plugin and pass in the event
+        // emitter so that the plugin can integrate with the SDK.
+        googleIMAComponent = new GoogleIMAComponent(this.playerVideoView, eventEmitter, true);
+    }
+
 
     private void printKeys(Map<String, Object> map) {
         Log.d("debug", "-----------");

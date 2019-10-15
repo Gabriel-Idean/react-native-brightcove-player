@@ -76,8 +76,6 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
     private final EventEmitter eventEmitter;
     private GoogleIMAComponent googleIMAComponent;
     private String adRulesURL = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=";
-    private final BrightcoveExoPlayerVideoView testView;
-
 
     public BrightcovePlayerIMAView(ThemedReactContext context, ReactApplicationContext applicationContext) {
         super(context);
@@ -95,8 +93,6 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.playerVideoView.setMediaController(this.mediaController);
         this.requestLayout();
         ViewCompat.setTranslationZ(this, 9999);
-
-        testView = this.playerVideoView;
 
         // *** This method call is optional *** //
         setupAdMarkers(this.playerVideoView);
@@ -450,7 +446,7 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
             public void processEvent(Event event) {
                 // Create a container object for the ads to be presented.
                 AdDisplayContainer container = sdkFactory.createAdDisplayContainer();
-                container.setAdContainer(testView);
+                container.setAdContainer(BrightcovePlayerIMAView.this.playerVideoView);
                 container.setPlayer(googleIMAComponent.getVideoAdPlayer());
 
                 String IMAUrl = settings != null && settings.hasKey("IMAUrl") ?

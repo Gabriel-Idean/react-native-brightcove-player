@@ -5,6 +5,8 @@ import androidx.core.view.ViewCompat;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
+import android.view.View;
+import android.view.Choreographer;
 
 import android.text.format.DateUtils;
 
@@ -92,6 +94,9 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.mediaController = new BrightcoveMediaController(this.playerVideoView);
         this.playerVideoView.setMediaController(this.mediaController);
         this.requestLayout();
+
+        setupLayoutHack();
+
         ViewCompat.setTranslationZ(this, 9999);
 
         // *** This method call is optional *** //
@@ -497,5 +502,23 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.playerVideoView.clear();
         this.removeAllViews();
         this.applicationContext.removeLifecycleEventListener(this);
+    }
+    private void setupLayoutHack() {
+        Choreographer.getInstance().postFrameCallback(new Choreographer.FrameCallback() {
+            @Override
+            public void doFrame(long frameTimeNanos) {
+                manuallyLayoutChildren();
+                getViewTreeObserver().dispatchOnGlobalLayout();
+                Choreographer.getInstance().postFrameCallback(this);
+            }
+        });
+    }
+    private void manuallyLayoutChildren() {
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            child.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+            child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
+        }
     }
 }

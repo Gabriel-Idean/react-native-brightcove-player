@@ -75,9 +75,8 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
     private static final TrackSelection.Factory FIXED_FACTORY = new FixedTrackSelection.Factory();
     
     private final String TAG = this.getClass().getSimpleName();
-    private final EventEmitter eventEmitter;
+    private EventEmitter eventEmitter;
     private GoogleIMAComponent googleIMAComponent;
-    private String adRulesURL = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=";
 
     public BrightcovePlayerIMAView(ThemedReactContext context, ReactApplicationContext applicationContext) {
         super(context);
@@ -85,7 +84,10 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.applicationContext = applicationContext;
         this.applicationContext.addLifecycleEventListener(this);
         this.setBackgroundColor(Color.BLACK);
+        setup();
+    }
 
+    private void setup () {
         this.playerVideoView = new BrightcoveExoPlayerVideoView(this.context);
 
         this.addView(this.playerVideoView);
@@ -456,12 +458,11 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
 
                 String IMAUrl = settings != null && settings.hasKey("IMAUrl") ?
                 settings.getString("IMAUrl") : "";
-                Log.v(TAG, IMAUrl);
 
                 // Build an ads request object and point it to the ad
                 // display container created above.
                 AdsRequest adsRequest = sdkFactory.createAdsRequest();
-                adsRequest.setAdTagUrl(adRulesURL);
+                adsRequest.setAdTagUrl(IMAUrl);
                 adsRequest.setAdDisplayContainer(container);
 
                 ArrayList<AdsRequest> adsRequests = new ArrayList<AdsRequest>(1);
@@ -503,6 +504,7 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.removeAllViews();
         this.applicationContext.removeLifecycleEventListener(this);
     }
+
     private void setupLayoutHack() {
         Choreographer.getInstance().postFrameCallback(new Choreographer.FrameCallback() {
             @Override
@@ -513,6 +515,7 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
             }
         });
     }
+
     private void manuallyLayoutChildren() {
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);

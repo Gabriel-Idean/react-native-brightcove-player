@@ -203,11 +203,6 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
 
     public void setSettings(ReadableMap settings) {
         this.settings = settings;
-
-        // Use a procedural abstraction to setup the Google IMA SDK via the plugin.
-        // setupGoogleIMA();
-        // setupAdMarkers(this.playerVideoView);
-
     }
 
     public void setPolicyKey(String policyKey) {

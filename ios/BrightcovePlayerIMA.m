@@ -33,8 +33,15 @@
     _playbackController = [BCOVPlayerSDKManager.sharedManager createIMAPlaybackControllerWithSettings:imaSettings adsRenderingSettings:renderSettings adsRequestPolicy:adsRequestPolicy adContainer:self companionSlots:nil viewStrategy:nil];
     
     _playbackController.delegate = self;
-    _playbackController.autoPlay = NO;
-    _playbackController.autoAdvance = YES;
+    
+    BOOL autoAdvance = [settings objectForKey:@"autoAdvance"] != nil ? [[settings objectForKey:@"autoAdvance"] boolValue] : NO;
+    BOOL autoPlay = [settings objectForKey:@"autoPlay"] != nil ? [[settings objectForKey:@"autoPlay"] boolValue] : YES;
+    BOOL allowsExternalPlayback = [settings objectForKey:@"allowsExternalPlayback"] != nil ? [[settings objectForKey:@"allowsExternalPlayback"] boolValue] : YES;
+
+    _playbackController.autoAdvance = autoAdvance;
+    _playbackController.autoPlay = autoPlay;
+    _playbackController.allowsExternalPlayback = allowsExternalPlayback;
+
     
     _playerView = [[BCOVPUIPlayerView alloc] initWithPlaybackController:self.playbackController options:nil controlsView:[BCOVPUIBasicControlView basicControlViewWithVODLayout] ];
     _playerView.delegate = self;
@@ -42,7 +49,7 @@
     _playerView.backgroundColor = UIColor.blackColor;
     
     _targetVolume = 1.0;
-    _autoPlay = NO;
+    _autoPlay = autoPlay;
     
     [self addSubview:_playerView];
     

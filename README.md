@@ -19,41 +19,25 @@
 
 ```console
 yarn add react-native-brightcove-player
-react-native link react-native-brightcove-player
-```
-
-- Add `resolver` entry into `metro.config.js` or `rn-cli.config.js` if it does not work.
-  - Note that it is [workaround](https://github.com/facebook/react-native/issues/21242#issuecomment-445784118), so you should remove when it's no longer needed
-
-```js
-const blacklist = require('metro-config/src/defaults/blacklist');
-
-module.exports = {
-  resolver: {
-    blacklistRE: blacklist([/node_modules\/.*\/node_modules\/react-native\/.*/])
-  }
-};
 ```
 
 ### iOS
 
-- Make `Podfile` and `pod install && pod update`
+- Add source to `Podfile` and `pod install && pod update`
+- Specify platform version to `10.0`
+- [Example](https://github.com/manse/react-native-brightcove-player/commit/d4d15dbff828c19fd110fe5764c2c72279e50d6a)
 
 ```rb
 source 'https://github.com/brightcove/BrightcoveSpecs.git'
 
 platform :ios, '10.0'
-use_frameworks!
-
-target 'YOUR_PROJECT_ID' do
-    pod 'Brightcove-Player-Core'
-end
 ```
 
 ### Android
 
 - Add maven source to repositories in `android/build.gradle`
 - [Enables multiDex](https://developer.android.com/studio/build/multidex).
+- [Example](https://github.com/manse/react-native-brightcove-player/commit/337450274a0c7ed3b8de890837e60949e6df1db0)
 
 ```gradle
 allprojects {

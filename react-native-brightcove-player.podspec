@@ -15,6 +15,6 @@ Pod::Spec.new do |s|
   s.source_files        = 'ios/**/*.{h,m}'
 
   s.dependency          'React'
-  s.dependency          'Brightcove-Player-Core'
+  s.dependency          'Brightcove-Player-IMA'
   s.static_framework    = false
 end

@@ -43,8 +43,8 @@ android {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    implementation 'com.brightcove.player:exoplayer2:6.8.0'
-    implementation "com.brightcove.player:android-ima-plugin:6.8.0"
+    implementation 'com.brightcove.player:exoplayer2:6.9.0'
+    implementation "com.brightcove.player:android-ima-plugin:6.9.0"
     implementation 'com.google.ads.interactivemedia.v3:interactivemedia:3.11.2'
     implementation ('com.google.android.gms:play-services-ads:12.0.1') {
         exclude group: "com.google.android.gms"

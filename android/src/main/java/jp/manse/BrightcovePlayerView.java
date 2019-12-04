@@ -6,6 +6,11 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 
+import android.app.Dialog;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+
 import com.brightcove.player.display.ExoPlayerVideoDisplayComponent;
 import com.brightcove.player.edge.Catalog;
 import com.brightcove.player.edge.OfflineCatalog;
@@ -57,6 +62,11 @@ public class BrightcovePlayerView extends RelativeLayout implements LifecycleEve
     private float playbackRate = 1;
     private static final TrackSelection.Factory FIXED_FACTORY = new FixedTrackSelection.Factory();
 
+    private boolean mExoPlayerFullscreen = false;
+    private FrameLayout mFullScreenButton;
+    private ImageView mFullScreenIcon;
+    private Dialog mFullScreenDialog;
+
     public BrightcovePlayerView(ThemedReactContext context, ReactApplicationContext applicationContext) {
         super(context);
         this.context = context;
@@ -70,10 +80,15 @@ public class BrightcovePlayerView extends RelativeLayout implements LifecycleEve
         this.playerVideoView.finishInitialization();
         this.mediaController = new BrightcoveMediaController(this.playerVideoView);
         this.playerVideoView.setMediaController(this.mediaController);
+//        this.mediaController = this.playerVideoView.getBrightcoveMediaController();
         this.requestLayout();
+        this.initFullscreenDialog();
+
         ViewCompat.setTranslationZ(this, 9999);
 
-        EventEmitter eventEmitter = this.playerVideoView.getEventEmitter();
+//        Log.w("button", this.playerVideoView.findViewById(com.brightcove.player.R.id.full_screen).toString());
+
+        final EventEmitter eventEmitter = this.playerVideoView.getEventEmitter();
         eventEmitter.on(EventType.VIDEO_SIZE_KNOWN, new EventListener() {
             @Override
             public void processEvent(Event e) {
@@ -130,6 +145,7 @@ public class BrightcovePlayerView extends RelativeLayout implements LifecycleEve
             @Override
             public void processEvent(Event e) {
                 mediaController.show();
+//                openFullscreenDialog();
                 WritableMap event = Arguments.createMap();
                 ReactContext reactContext = (ReactContext) BrightcovePlayerView.this.getContext();
                 reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(BrightcovePlayerView.this.getId(), BrightcovePlayerManager.EVENT_TOGGLE_ANDROID_FULLSCREEN, event);
@@ -139,6 +155,7 @@ public class BrightcovePlayerView extends RelativeLayout implements LifecycleEve
             @Override
             public void processEvent(Event e) {
                 mediaController.show();
+//                closeFullscreenDialog();
                 WritableMap event = Arguments.createMap();
                 ReactContext reactContext = (ReactContext) BrightcovePlayerView.this.getContext();
                 reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(BrightcovePlayerView.this.getId(), BrightcovePlayerManager.EVENT_TOGGLE_ANDROID_FULLSCREEN, event);
@@ -212,11 +229,19 @@ public class BrightcovePlayerView extends RelativeLayout implements LifecycleEve
     }
 
     public void setFullscreen(boolean fullscreen) {
-        this.mediaController.show();
-        WritableMap event = Arguments.createMap();
-        event.putBoolean("fullscreen", fullscreen);
-        ReactContext reactContext = (ReactContext) BrightcovePlayerView.this.getContext();
-        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(BrightcovePlayerView.this.getId(), BrightcovePlayerManager.EVENT_TOGGLE_ANDROID_FULLSCREEN, event);
+        Log.w("fullscreen", Boolean.toString(fullscreen));
+        if (fullscreen) {
+            openFullscreenDialog();
+            this.playerVideoView.getEventEmitter().emit(EventType.ENTER_FULL_SCREEN);
+        } else {
+            closeFullscreenDialog();
+            this.playerVideoView.getEventEmitter().emit(EventType.EXIT_FULL_SCREEN);
+        }
+//        this.mediaController.show();
+//        WritableMap event = Arguments.createMap();
+//        event.putBoolean("fullscreen", fullscreen);
+//        ReactContext reactContext = (ReactContext) BrightcovePlayerView.this.getContext();
+//        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(BrightcovePlayerView.this.getId(), BrightcovePlayerManager.EVENT_TOGGLE_ANDROID_FULLSCREEN, event);
     }
 
     public void setVolume(float volume) {
@@ -367,4 +392,34 @@ public class BrightcovePlayerView extends RelativeLayout implements LifecycleEve
         this.removeAllViews();
         this.applicationContext.removeLifecycleEventListener(this);
     }
+
+    private void initFullscreenDialog() {
+        mFullScreenDialog = new Dialog(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+            public void onBackPressed() {
+                if (mExoPlayerFullscreen)
+                    closeFullscreenDialog();
+                super.onBackPressed();
+            }
+        };
+    }
+
+    private void openFullscreenDialog() {
+        if (mExoPlayerFullscreen) return;
+        ((ViewGroup) playerVideoView.getParent()).removeView(playerVideoView);
+        mFullScreenDialog.addContentView(playerVideoView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//        mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_skrink));
+        mExoPlayerFullscreen = true;
+        mFullScreenDialog.show();
+    }
+
+
+    private void closeFullscreenDialog() {
+        if (!mExoPlayerFullscreen) return;
+        ((ViewGroup) playerVideoView.getParent()).removeView(playerVideoView);
+        this.addView(this.playerVideoView);
+        mExoPlayerFullscreen = false;
+        mFullScreenDialog.dismiss();
+//        mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_expand));
+    }
+
 }

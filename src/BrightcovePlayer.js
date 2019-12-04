@@ -36,14 +36,14 @@ class BrightcovePlayer extends Component {
         {...this.props}
         style={[
           this.props.style,
-          this.state.androidFullscreen && {
-            position: 'absolute',
-            zIndex: 9999,
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%'
-          }
+          // this.state.androidFullscreen && {
+          //   position: 'absolute',
+          //   zIndex: 9999,
+          //   top: 0,
+          //   left: 0,
+          //   width: '100%',
+          //   height: '100%'
+          // }
         ]}
         onReady={event =>
           this.props.onReady && this.props.onReady(event.nativeEvent)

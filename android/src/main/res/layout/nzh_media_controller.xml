@@ -64,7 +64,7 @@
         android:indeterminateOnly="false"
         android:splitTrack="false"
         android:visibility="visible"
-        bmc:brightcove_marker_color="@color/bmc_seekbar_marker"
+        bmc:brightcove_marker_color="@color/white"
         bmc:brightcove_marker_width="3.0"/>
 
     <TextView

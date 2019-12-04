@@ -17,6 +17,9 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import jp.manse.R;
 
 public class FullScreenHandler {
+    // This TTF font is included in the Brightcove SDK.
+    public static final String FONT_AWESOME = "fontawesome-webfont.ttf";
+
     private ThemedReactContext context;
     private BrightcoveExoPlayerVideoView playerVideoView;
     private RelativeLayout brightcovePlayerView;
@@ -56,7 +59,7 @@ public class FullScreenHandler {
     }
 
     private void initButtons(final BrightcoveExoPlayerVideoView brightcoveVideoView) {
-        Typeface font = Typeface.createFromAsset(context.getAssets(), "fontawesome-webfont.ttf");
+        Typeface font = Typeface.createFromAsset(context.getAssets(), FONT_AWESOME);
         final Button fullScreen = (Button) brightcoveVideoView.findViewById(R.id.full_screen_custom);
         if (fullScreen != null) {
             fullScreen.setTypeface(font);
@@ -102,21 +105,28 @@ public class FullScreenHandler {
 
     public void openFullscreenDialog() {
         if (mExoPlayerFullscreen) return;
+        boolean isPlaying = playerVideoView.isPlaying();
         ((ViewGroup) playerVideoView.getParent()).removeView(playerVideoView);
-        mFullScreenDialog.addContentView(playerVideoView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mFullScreenDialog.addContentView(playerVideoView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mExoPlayerFullscreen = true;
         mFullScreenDialog.show();
+        if (isPlaying) {
+            playerVideoView.start();
+        }
     }
 
 
     public void closeFullscreenDialog() {
         if (!mExoPlayerFullscreen) return;
+        boolean isPlaying = playerVideoView.isPlaying();
         ((ViewGroup) playerVideoView.getParent()).removeView(playerVideoView);
-        this.brightcovePlayerView.addView(this.playerVideoView);
-        BrightcoveMediaController mediaController = playerVideoView.getBrightcoveMediaController();
-        playerVideoView.setMediaController((BrightcoveMediaController)null);
-        playerVideoView.setMediaController(mediaController);
+        brightcovePlayerView.addView(playerVideoView);
+        playerVideoView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        brightcovePlayerView.requestLayout();
         mExoPlayerFullscreen = false;
         mFullScreenDialog.dismiss();
+        if (isPlaying) {
+            playerVideoView.start();
+        }
     }
 }

@@ -3,7 +3,9 @@ package jp.manse;
 import android.graphics.Color;
 import androidx.core.view.ViewCompat;
 import android.util.Log;
+import android.view.Choreographer;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.brightcove.player.display.ExoPlayerVideoDisplayComponent;

@@ -90,7 +90,6 @@ export default class App extends Component {
           accountId={ACCOUNT_ID}
           policyKey={POLICY_KEY}
           autoPlay
-          // fullscreen
           {...this.state.playback}
         />
         <FlatList

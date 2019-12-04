@@ -400,7 +400,8 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
       to the Brightcove Seek Bar.
      */
     private void setupAdMarkers(BaseVideoView videoView) {
-        final BrightcoveMediaController mediaController = new BrightcoveMediaController(this.playerVideoView);
+//        final BrightcoveMediaController mediaController = new BrightcoveMediaController(this.playerVideoView);
+        final BrightcoveMediaController mediaController = this.playerVideoView.getBrightcoveMediaController();
 
         // Add "Ad Markers" where the Ads Manager says ads will appear.
         mediaController.addListener(GoogleIMAEventType.ADS_MANAGER_LOADED, new EventListener() {
@@ -513,7 +514,7 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.applicationContext.removeLifecycleEventListener(this);
     }
 
-    private void setupLayoutHack() {
+    public void setupLayoutHack() {
         Choreographer.getInstance().postFrameCallback(new Choreographer.FrameCallback() {
             @Override
             public void doFrame(long frameTimeNanos) {

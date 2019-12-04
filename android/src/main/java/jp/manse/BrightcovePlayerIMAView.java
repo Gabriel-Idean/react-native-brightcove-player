@@ -55,6 +55,8 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.manse.util.FullScreenHandler;
+
 public class BrightcovePlayerIMAView extends RelativeLayout implements LifecycleEventListener {
     private ThemedReactContext context;
     private ReactApplicationContext applicationContext;
@@ -78,6 +80,8 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
     private EventEmitter eventEmitter;
     private GoogleIMAComponent googleIMAComponent;
 
+    private FullScreenHandler fullScreenHandler;
+
     public BrightcovePlayerIMAView(ThemedReactContext context, ReactApplicationContext applicationContext) {
         super(context);
         this.context = context;
@@ -93,8 +97,10 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.addView(this.playerVideoView);
         this.playerVideoView.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         this.playerVideoView.finishInitialization();
-        this.mediaController = new BrightcoveMediaController(this.playerVideoView);
-        this.playerVideoView.setMediaController(this.mediaController);
+
+        this.fullScreenHandler = new FullScreenHandler(context, this.playerVideoView, this);
+        this.mediaController = this.fullScreenHandler.initMediaController(this.playerVideoView);
+
         this.requestLayout();
 
         setupLayoutHack();
@@ -251,11 +257,18 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
     }
 
     public void setFullscreen(boolean fullscreen) {
-        this.mediaController.show();
-        WritableMap event = Arguments.createMap();
-        event.putBoolean("fullscreen", fullscreen);
-        ReactContext reactContext = (ReactContext) BrightcovePlayerIMAView.this.getContext();
-        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(BrightcovePlayerIMAView.this.getId(), BrightcovePlayerIMAManager.EVENT_TOGGLE_ANDROID_FULLSCREEN, event);
+        if (fullscreen) {
+            this.fullScreenHandler.openFullscreenDialog();
+            this.playerVideoView.getEventEmitter().emit(EventType.ENTER_FULL_SCREEN);
+        } else {
+            this.fullScreenHandler.closeFullscreenDialog();
+            this.playerVideoView.getEventEmitter().emit(EventType.EXIT_FULL_SCREEN);
+        }
+//        this.mediaController.show();
+//        WritableMap event = Arguments.createMap();
+//        event.putBoolean("fullscreen", fullscreen);
+//        ReactContext reactContext = (ReactContext) BrightcovePlayerIMAView.this.getContext();
+//        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(BrightcovePlayerIMAView.this.getId(), BrightcovePlayerIMAManager.EVENT_TOGGLE_ANDROID_FULLSCREEN, event);
     }
 
     public void setVolume(float volume) {

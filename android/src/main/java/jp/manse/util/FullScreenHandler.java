@@ -96,11 +96,13 @@ public class FullScreenHandler {
     private void initFullscreenDialog() {
         mFullScreenDialog = new Dialog(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
             public void onBackPressed() {
-                if (mExoPlayerFullscreen)
+                if (mExoPlayerFullscreen) {
                     closeFullscreenDialog();
+                }
                 super.onBackPressed();
             }
         };
+        mFullScreenDialog.dismiss();
     }
 
     public void openFullscreenDialog() {

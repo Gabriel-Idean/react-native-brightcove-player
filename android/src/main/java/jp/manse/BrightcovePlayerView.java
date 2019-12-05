@@ -147,6 +147,7 @@ public class BrightcovePlayerView extends RelativeLayout implements LifecycleEve
             @Override
             public void processEvent(Event e) {
                 mediaController.show();
+                fixVideoLayout();
                 WritableMap event = Arguments.createMap();
                 ReactContext reactContext = (ReactContext) BrightcovePlayerView.this.getContext();
                 reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(BrightcovePlayerView.this.getId(), BrightcovePlayerManager.EVENT_TOGGLE_ANDROID_FULLSCREEN, event);

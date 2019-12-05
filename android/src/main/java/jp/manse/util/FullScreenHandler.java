@@ -1,9 +1,11 @@
 package jp.manse.util;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
@@ -26,6 +28,7 @@ public class FullScreenHandler {
 
     private boolean mExoPlayerFullscreen = false;
     private Dialog mFullScreenDialog;
+    private Button fullScreenButton;
 
     public FullScreenHandler(ThemedReactContext context, BrightcoveExoPlayerVideoView playerVideoView, RelativeLayout brightcovePlayerView) {
         this.context = context;
@@ -60,19 +63,15 @@ public class FullScreenHandler {
 
     private void initButtons(final BrightcoveExoPlayerVideoView brightcoveVideoView) {
         Typeface font = Typeface.createFromAsset(context.getAssets(), FONT_AWESOME);
-        final Button fullScreen = (Button) brightcoveVideoView.findViewById(R.id.full_screen_custom);
-        if (fullScreen != null) {
-            fullScreen.setTypeface(font);
-            fullScreen.setOnClickListener(new View.OnClickListener() {
+        fullScreenButton = (Button) brightcoveVideoView.findViewById(R.id.full_screen_custom);
+        if (fullScreenButton != null) {
+            fullScreenButton.setTypeface(font);
+            fullScreenButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (!mExoPlayerFullscreen) {
-                        brightcoveVideoView.getEventEmitter().emit(EventType.ENTER_FULL_SCREEN);
-                        fullScreen.setText(R.string.nzh_brightcove_controls_exit_full_screen);
                         openFullscreenDialog();
                     } else {
-                        brightcoveVideoView.getEventEmitter().emit(EventType.EXIT_FULL_SCREEN);
-                        fullScreen.setText(R.string.nzh_brightcove_controls_enter_full_screen);
                         closeFullscreenDialog();
                     }
                 }
@@ -89,12 +88,11 @@ public class FullScreenHandler {
                 }
             });
         }
-
-
     }
 
     private void initFullscreenDialog() {
         mFullScreenDialog = new Dialog(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+            @Override
             public void onBackPressed() {
                 if (mExoPlayerFullscreen) {
                     closeFullscreenDialog();
@@ -110,13 +108,14 @@ public class FullScreenHandler {
         boolean isPlaying = playerVideoView.isPlaying();
         ((ViewGroup) playerVideoView.getParent()).removeView(playerVideoView);
         mFullScreenDialog.addContentView(playerVideoView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        fullScreenButton.setText(R.string.nzh_brightcove_controls_exit_full_screen);
         mExoPlayerFullscreen = true;
         mFullScreenDialog.show();
+        playerVideoView.getEventEmitter().emit(EventType.ENTER_FULL_SCREEN);
         if (isPlaying) {
             playerVideoView.start();
         }
     }
-
 
     public void closeFullscreenDialog() {
         if (!mExoPlayerFullscreen) return;
@@ -124,9 +123,13 @@ public class FullScreenHandler {
         ((ViewGroup) playerVideoView.getParent()).removeView(playerVideoView);
         brightcovePlayerView.addView(playerVideoView);
         playerVideoView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        fullScreenButton.setText(R.string.nzh_brightcove_controls_enter_full_screen);
         brightcovePlayerView.requestLayout();
         mExoPlayerFullscreen = false;
         mFullScreenDialog.dismiss();
+        final BrightcoveMediaController mediaController = this.playerVideoView.getBrightcoveMediaController();
+        mediaController.show();
+        playerVideoView.getEventEmitter().emit(EventType.EXIT_FULL_SCREEN);
         if (isPlaying) {
             playerVideoView.start();
         }

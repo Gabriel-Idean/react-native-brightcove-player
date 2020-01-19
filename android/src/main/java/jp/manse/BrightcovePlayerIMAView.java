@@ -292,6 +292,14 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.playerVideoView.seekTo(time);
     }
 
+    public void pause() {
+        this.playerVideoView.pause();
+    }
+
+    public void play() {
+        this.playerVideoView.start();
+    }
+
     private void updateBitRate() {
         if (this.bitRate == 0) return;
         ExoPlayerVideoDisplayComponent videoDisplay = ((ExoPlayerVideoDisplayComponent) this.playerVideoView.getVideoDisplay());

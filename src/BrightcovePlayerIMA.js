@@ -122,6 +122,7 @@ BrightcovePlayerIMA.prototype.play = Platform.select({
     UIManager.dispatchViewManagerCommand(
       ReactNative.findNodeHandle(this._root),
       UIManager.BrightcovePlayerIMA.Commands.play,
+      [],
     );
   },
 });
@@ -136,6 +137,7 @@ BrightcovePlayerIMA.prototype.pause = Platform.select({
     UIManager.dispatchViewManagerCommand(
       ReactNative.findNodeHandle(this._root),
       UIManager.BrightcovePlayerIMA.Commands.pause,
+      [],
     );
   },
 });

@@ -20,6 +20,8 @@ import java.util.Map;
 public class BrightcovePlayerIMAManager extends SimpleViewManager<BrightcovePlayerIMAView> {
     public static final String REACT_CLASS = "BrightcovePlayerIMA";
     public static final int COMMAND_SEEK_TO = 1;
+    public static final int COMMAND_PLAY = 2;
+    public static final int COMMAND_PAUSE = 3;
     public static final String EVENT_READY = "ready";
     public static final String EVENT_PLAY = "play";
     public static final String EVENT_PAUSE = "pause";
@@ -116,7 +118,11 @@ public class BrightcovePlayerIMAManager extends SimpleViewManager<BrightcovePlay
     public Map<String, Integer> getCommandsMap() {
         return MapBuilder.of(
                 "seekTo",
-                COMMAND_SEEK_TO
+                COMMAND_SEEK_TO,
+                "play",
+                COMMAND_PLAY,
+                "pause",
+                COMMAND_PAUSE
         );
     }
 
@@ -127,6 +133,14 @@ public class BrightcovePlayerIMAManager extends SimpleViewManager<BrightcovePlay
         switch (commandType) {
             case COMMAND_SEEK_TO: {
                 view.seekTo((int)(args.getDouble(0) * 1000));
+                return;
+            }
+            case COMMAND_PLAY: {
+                view.play();
+                return;
+            }
+            case COMMAND_PAUSE: {
+                view.pause();
                 return;
             }
         }

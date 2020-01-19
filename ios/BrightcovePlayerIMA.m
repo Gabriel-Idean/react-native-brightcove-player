@@ -45,7 +45,6 @@
     BCOVPUIBasicControlView *control = [BCOVPUIBasicControlView basicControlViewWithVODLayout];
     [control.progressSlider setTrackHeight:2];
     [control.progressSlider setMinimumTrackTintColor:[UIColor colorWithRed:0.22f green:0.64f blue:0.84f alpha:1.0f]];
-    [control setAdvertisingMode:YES];
     
     BCOVPUIPlayerViewOptions *options = [[BCOVPUIPlayerViewOptions alloc] init];
     options.jumpBackInterval = 999;
@@ -281,6 +280,17 @@
         if (self.onEnterFullscreen) {
             self.onEnterFullscreen(@{});
         }
+    }
+}
+
+-(void) pause {
+    if (self.playbackController) {
+        [self.playbackController pause];
+    }
+}
+-(void) play {
+    if (self.playbackController) {
+        [self.playbackController play];
     }
 }
 

@@ -51,6 +51,23 @@ RCT_EXPORT_METHOD(seekTo:(nonnull NSNumber *)reactTag seconds:(nonnull NSNumber 
         }
     }];
 }
+RCT_EXPORT_METHOD(play:(nonnull NSNumber *)reactTag) {
+    [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+        BrightcovePlayerIMA *player = (BrightcovePlayerIMA*)viewRegistry[reactTag];
+        if ([player isKindOfClass:[BrightcovePlayerIMA class]]) {
+            [player play];
+        }
+    }];
+}
+
+RCT_EXPORT_METHOD(pause:(nonnull NSNumber *)reactTag) {
+    [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+        BrightcovePlayerIMA *player = (BrightcovePlayerIMA*)viewRegistry[reactTag];
+        if ([player isKindOfClass:[BrightcovePlayerIMA class]]) {
+            [player pause];
+        }
+    }];
+}
 
 RCT_EXPORT_METHOD(dispose:(nonnull NSNumber *)reactTag) {
     [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {

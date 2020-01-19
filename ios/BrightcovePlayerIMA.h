@@ -47,6 +47,8 @@
 
 -(void) setupWithSettings:(NSString*)settings;
 -(void) seekTo:(NSNumber *)time;
+-(void) pause;
+-(void) play;
 -(void) dispose;
 
 @end

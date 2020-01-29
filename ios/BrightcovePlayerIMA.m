@@ -1,7 +1,7 @@
 #import "BrightcovePlayerIMA.h"
 #import "BrightcovePlayerOfflineVideoManager.h"
 
-@interface BrightcovePlayerIMA () <BCOVPlaybackControllerDelegate, BCOVPUIPlayerViewDelegate>
+@interface BrightcovePlayerIMA () <BCOVPlaybackControllerDelegate, BCOVPUIPlayerViewDelegate, BCOVPlaybackControllerAdsDelegate>
 
 @end
 
@@ -281,6 +281,22 @@
             self.onEnterFullscreen(@{});
         }
     }
+}
+
+- (void)playbackController:(id<BCOVPlaybackController>)controller playbackSession:(id<BCOVPlaybackSession>)session didEnterAd:(BCOVAd *)ad {
+    [self pause];
+}
+
+- (void)playbackController:(id<BCOVPlaybackController>)controller playbackSession:(id<BCOVPlaybackSession>)session didEnterAdSequence:(BCOVAdSequence *)adSequence {
+    [self pause];
+}
+
+- (void)playbackController:(id<BCOVPlaybackController>)controller playbackSession:(id<BCOVPlaybackSession>)session didExitAd:(BCOVAd *)ad {
+    [self play];
+}
+
+- (void)playbackController:(id<BCOVPlaybackController>)controller playbackSession:(id<BCOVPlaybackSession>)session didExitAdSequence:(BCOVAdSequence *)adSequence {
+    [self play];
 }
 
 -(void) pause {

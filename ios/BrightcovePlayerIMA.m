@@ -1,7 +1,7 @@
 #import "BrightcovePlayerIMA.h"
 #import "BrightcovePlayerOfflineVideoManager.h"
 
-@interface BrightcovePlayerIMA () <BCOVPlaybackControllerDelegate, BCOVPUIPlayerViewDelegate, BCOVPlaybackControllerAdsDelegate>
+@interface BrightcovePlayerIMA () <IMAWebOpenerDelegate, BCOVPlaybackControllerDelegate, BCOVPUIPlayerViewDelegate, BCOVPlaybackControllerAdsDelegate>
 
 @end
 
@@ -246,6 +246,40 @@
             self.onEnd(@{});
         }
     }
+    
+    NSString *type = lifecycleEvent.eventType;
+
+    if ([type isEqualToString:kBCOVIMALifecycleEventAdsLoaderLoaded])
+    {        
+        // When ads load successfully, the kBCOVIMALifecycleEventAdsLoaderLoaded lifecycle event
+//        // returns an NSDictionary containing a reference to the IMAAdsManager.
+//        IMAAdsManager *adsManager = lifecycleEvent.properties[kBCOVIMALifecycleEventPropertyKeyAdsManager];
+//        if (adsManager != nil)
+//        {
+//            // Lower the volume of ads by half.
+//            adsManager.volume = adsManager.volume / 2.0;
+//            NSLog (@"ViewController Debug - IMAAdsManager.volume set to %0.1f.", adsManager.volume);
+//        }
+    }
+    else if ([type isEqualToString:kBCOVIMALifecycleEventAdsManagerDidReceiveAdEvent])
+    {
+        IMAAdEvent *adEvent = lifecycleEvent.properties[@"adEvent"];
+
+        switch (adEvent.type)
+        {
+            case kIMAAdEvent_STARTED:
+                _adsPlaying = YES;
+                break;
+            case kIMAAdEvent_COMPLETE:
+                _adsPlaying = NO;
+                break;
+            case kIMAAdEvent_ALL_ADS_COMPLETED:
+                _adsPlaying = NO;
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 - (void)playbackController:(id<BCOVPlaybackController>)controller playbackSession:(id<BCOVPlaybackSession>)session didChangeDuration:(NSTimeInterval)duration {
@@ -284,29 +318,43 @@
 }
 
 - (void)playbackController:(id<BCOVPlaybackController>)controller playbackSession:(id<BCOVPlaybackSession>)session didEnterAd:(BCOVAd *)ad {
-    [self pause];
+    [self.playbackController pause];
 }
 
 - (void)playbackController:(id<BCOVPlaybackController>)controller playbackSession:(id<BCOVPlaybackSession>)session didEnterAdSequence:(BCOVAdSequence *)adSequence {
-    [self pause];
+    [self.playbackController pause];
 }
 
 - (void)playbackController:(id<BCOVPlaybackController>)controller playbackSession:(id<BCOVPlaybackSession>)session didExitAd:(BCOVAd *)ad {
-    [self play];
+    [self.playbackController play];
 }
 
 - (void)playbackController:(id<BCOVPlaybackController>)controller playbackSession:(id<BCOVPlaybackSession>)session didExitAdSequence:(BCOVAdSequence *)adSequence {
-    [self play];
+    [self.playbackController play];
+}
+
+- (void)playbackController:(id<BCOVPlaybackController>)controller playbackSession:(id<BCOVPlaybackSession>)session ad:(BCOVAd *)ad didProgressTo:(NSTimeInterval)progress {
+    if (_playing) {
+        [self.playbackController pause];
+    }
 }
 
 -(void) pause {
     if (self.playbackController) {
+        if (_adsPlaying) {
+            [self.playbackController pauseAd];
+        }
         [self.playbackController pause];
     }
 }
 -(void) play {
     if (self.playbackController) {
-        [self.playbackController play];
+        if (_adsPlaying) {
+            [self.playbackController resumeAd];
+            [self.playbackController pause];
+        } else {
+            [self.playbackController play];
+        }
     }
 }
 

@@ -22,6 +22,7 @@
 @property (nonatomic) id<BCOVPlaybackSession> playbackSession;
 @property (nonatomic) BCOVPUIPlayerView *playerView;
 @property (nonatomic) BOOL playing;
+@property (nonatomic) BOOL adsPlaying;
 @property (nonatomic) BOOL autoPlay;
 @property (nonatomic) float lastBufferProgress;
 @property (nonatomic) float targetVolume;

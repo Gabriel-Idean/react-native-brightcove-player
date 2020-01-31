@@ -1,7 +1,9 @@
 package jp.manse;
 
 import android.graphics.Color;
+
 import androidx.core.view.ViewCompat;
+
 import android.util.Log;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
@@ -72,10 +74,11 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
     private OfflineCatalog offlineCatalog;
     private boolean autoPlay = true;
     private boolean playing = false;
+    private boolean adsPlaying = false;
     private int bitRate = 0;
     private float playbackRate = 1;
     private static final TrackSelection.Factory FIXED_FACTORY = new FixedTrackSelection.Factory();
-    
+
     private final String TAG = this.getClass().getSimpleName();
     private EventEmitter eventEmitter;
     private GoogleIMAComponent googleIMAComponent;
@@ -91,7 +94,7 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         setup();
     }
 
-    private void setup () {
+    private void setup() {
         this.playerVideoView = new BrightcoveExoPlayerVideoView(this.context);
 
         this.addView(this.playerVideoView);
@@ -277,6 +280,7 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.playerVideoView.getEventEmitter().emit(EventType.SET_VOLUME, details);
     }
 
+    /**/
     public void setBitRate(int bitRate) {
         this.bitRate = bitRate;
         this.updateBitRate();
@@ -293,11 +297,23 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
     }
 
     public void pause() {
-        this.playerVideoView.pause();
+        if (this.playerVideoView != null) {
+            if (this.adsPlaying && this.googleIMAComponent != null) {
+                this.googleIMAComponent.getVideoAdPlayer().pauseAd();
+            }
+            this.playerVideoView.pause();
+        }
     }
 
     public void play() {
-        this.playerVideoView.start();
+        if (this.playerVideoView != null) {
+            if (this.adsPlaying && this.googleIMAComponent != null) {
+                this.googleIMAComponent.getVideoAdPlayer().resumeAd();
+                this.playerVideoView.pause();
+            } else {
+                this.playerVideoView.start();
+            }
+        }
     }
 
     private void updateBitRate() {
@@ -422,7 +438,7 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
                     BrightcoveSeekBar brightcoveSeekBar = mediaController.getBrightcoveSeekBar();
                     // If cuepoint is negative it means it is a POST ROLL.
                     int markerTime = cuepoint < 0 ? brightcoveSeekBar.getMax() : (int) (cuepoint * DateUtils.SECOND_IN_MILLIS);
-                        mediaController.getBrightcoveSeekBar().addMarker(markerTime);
+                    mediaController.getBrightcoveSeekBar().addMarker(markerTime);
 
                 }
             }
@@ -430,7 +446,7 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         videoView.setMediaController(mediaController);
 
     }
-    
+
     /**
      * Setup the Brightcove IMA Plugin.
      */
@@ -442,6 +458,7 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         eventEmitter.on(EventType.AD_STARTED, new EventListener() {
             @Override
             public void processEvent(Event event) {
+                adsPlaying = true;
                 Log.v(TAG, event.getType());
             }
         });
@@ -450,6 +467,7 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         eventEmitter.on(GoogleIMAEventType.DID_FAIL_TO_PLAY_AD, new EventListener() {
             @Override
             public void processEvent(Event event) {
+                adsPlaying = false;
                 Log.v(TAG, event.getType());
             }
         });
@@ -458,7 +476,26 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         eventEmitter.on(EventType.AD_COMPLETED, new EventListener() {
             @Override
             public void processEvent(Event event) {
+                adsPlaying = false;
                 Log.v(TAG, event.getType());
+            }
+        });
+
+        // Enable Logging upon ad break completion.
+        eventEmitter.on(EventType.AD_BREAK_COMPLETED, new EventListener() {
+            @Override
+            public void processEvent(Event event) {
+                adsPlaying = false;
+                Log.v(TAG, event.getType());
+            }
+        });
+
+        // Enable Logging upon ad progress.
+        eventEmitter.on(EventType.AD_PROGRESS, new EventListener() {
+            @Override
+            public void processEvent(Event event) {
+                adsPlaying = false;
+//                Log.v(TAG, event.getType());
             }
         });
 
@@ -472,9 +509,8 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
                 AdDisplayContainer container = sdkFactory.createAdDisplayContainer();
                 container.setAdContainer(BrightcovePlayerIMAView.this.playerVideoView);
                 container.setPlayer(googleIMAComponent.getVideoAdPlayer());
-
                 String IMAUrl = settings != null && settings.hasKey("IMAUrl") ?
-                settings.getString("IMAUrl") : "";
+                        settings.getString("IMAUrl") : "";
 
                 // Build an ads request object and point it to the ad
                 // display container created above.

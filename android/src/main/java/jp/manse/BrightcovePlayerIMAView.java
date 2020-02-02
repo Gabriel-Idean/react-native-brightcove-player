@@ -494,10 +494,37 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         eventEmitter.on(EventType.AD_PROGRESS, new EventListener() {
             @Override
             public void processEvent(Event event) {
-                adsPlaying = false;
-//                Log.v(TAG, event.getType());
+                if (playing) {
+                    playerVideoView.pause();
+                }
             }
         });
+
+        // Enable Logging upon ad progress.
+        eventEmitter.on(EventType.AD_BREAK_STARTED, new EventListener() {
+            @Override
+            public void processEvent(Event event) {
+                if (playing) {
+                    playerVideoView.pause();
+                }
+            }
+        });
+
+        // Enable Logging upon ad progress.
+/*
+        eventEmitter.on(EventType.AD_PAUSED, new EventListener() {
+            @Override
+            public void processEvent(Event event) {
+            }
+        });
+
+        // Enable Logging upon ad progress.
+        eventEmitter.on(EventType.AD_RESUMED, new EventListener() {
+            @Override
+            public void processEvent(Event event) {
+            }
+        });
+*/
 
         // Set up a listener for initializing AdsRequests. The Google
         // IMA plugin emits an ad request event as a result of

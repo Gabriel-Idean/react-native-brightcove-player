@@ -569,12 +569,15 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
 
     @Override
     public void onHostResume() {
+        if (this.playing || this.adsPlaying) {
+            this.play();
+        }
 
     }
 
     @Override
     public void onHostPause() {
-
+        this.pause();
     }
 
     @Override

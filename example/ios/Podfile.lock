@@ -217,8 +217,8 @@ PODS:
     - React-cxxreact (= 0.61.2)
     - React-jsi (= 0.61.2)
   - React-jsinspector (0.61.2)
-  - react-native-brightcove-ima-player (1.7.0):
-    - Brightcove-Player-IMA
+  - react-native-brightcove-ima-player (1.8.2):
+    - Brightcove-Player-IMA (~> 6.7.0)
     - React
   - React-RCTActionSheet (0.61.2):
     - React-Core/RCTActionSheetHeaders (= 0.61.2)
@@ -359,7 +359,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   react-native-brightcove-ima-player:
-    :commit: 61fc7a879ee40718561f0e88de4ce39586c45aa9
+    :commit: 7281ad6ecabbfceac61615fb326613531084632d
     :git: https://github.com/NZME/react-native-brightcove-player.git
 
 SPEC CHECKSUMS:
@@ -385,7 +385,7 @@ SPEC CHECKSUMS:
   React-jsi: 32285a21b1b24c36060493ed3057a34677d58d09
   React-jsiexecutor: 8909917ff7d8f21a57e443a866fd8d4560e50c65
   React-jsinspector: 111d7d342b07a904c400592e02a2b958f1098b60
-  react-native-brightcove-ima-player: 659765c9f41cb77947641b8b492cf47bca085ba2
+  react-native-brightcove-ima-player: e5f96b344ba9580be8605f7f34e89a0606496157
   React-RCTActionSheet: 89b037c0fb7d2671607cb645760164e7e0c013f6
   React-RCTAnimation: e3cefa93c38c004c318f7ec04b883eb14b8b8235
   React-RCTBlob: d26ac0e313fbf14e7203473fd593ccaaeee8329e

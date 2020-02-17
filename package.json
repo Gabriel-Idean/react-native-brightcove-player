@@ -3,6 +3,10 @@
   "version": "1.7.0",
   "description": "A React Native implementation of Brightcove Player SDK.",
   "main": "index.js",
+  "scripts": {
+    "post-patch": "npm version patch && git push origin --all && git push origin --tags && npm publish",
+    "post-minor": "npm version minor && git push origin --all && git push origin --tags && npm publish"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:NZME/react-native-brightcove-player.git"

@@ -297,6 +297,13 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
         this.playerVideoView.seekTo(time);
     }
 
+    //We need to stop the player to avoid a potential memory leak.
+    public void stopPlayback(){
+        if(this.playerVideoView != null){
+            this.playerVideoView.stopPlayback();
+        }
+    }
+
     public void pause() {
         if (this.playerVideoView != null) {
             if (this.adsPlaying && this.googleIMAComponent != null) {

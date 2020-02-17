@@ -22,6 +22,7 @@ public class BrightcovePlayerIMAManager extends SimpleViewManager<BrightcovePlay
     public static final int COMMAND_SEEK_TO = 1;
     public static final int COMMAND_PLAY = 2;
     public static final int COMMAND_PAUSE = 3;
+    public static final int COMMAND_STOP_PLAYBACK = 4;
     public static final String EVENT_READY = "ready";
     public static final String EVENT_PLAY = "play";
     public static final String EVENT_PAUSE = "pause";
@@ -122,7 +123,9 @@ public class BrightcovePlayerIMAManager extends SimpleViewManager<BrightcovePlay
                 "play",
                 COMMAND_PLAY,
                 "pause",
-                COMMAND_PAUSE
+                COMMAND_PAUSE,
+                "stopPlayback",
+                COMMAND_STOP_PLAYBACK
         );
     }
 
@@ -141,6 +144,10 @@ public class BrightcovePlayerIMAManager extends SimpleViewManager<BrightcovePlay
             }
             case COMMAND_PAUSE: {
                 view.pause();
+                return;
+            }
+            case  COMMAND_STOP_PLAYBACK:{
+                view.stopPlayback();
                 return;
             }
         }

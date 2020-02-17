@@ -1,6 +1,17 @@
-import React, { Component } from 'react';
-import { FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { BrightcovePlayer, BrightcovePlayerPoster, BrightcovePlayerUtil } from 'react-native-brightcove-ima-player';
+import React, {Component} from 'react';
+import {
+  FlatList,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {
+  BrightcovePlayer,
+  BrightcovePlayerPoster,
+  BrightcovePlayerUtil,
+} from 'react-native-brightcove-ima-player';
 
 const ACCOUNT_ID = '5434391461001';
 const POLICY_KEY =
@@ -13,35 +24,35 @@ export default class App extends Component {
     offlineVideos: [],
     playback: {
       referenceId: null,
-      videoToken: null
-    }
+      videoToken: null,
+    },
   };
 
   componentDidMount() {
     BrightcovePlayerUtil.getPlaylistWithReferenceId(
       ACCOUNT_ID,
       POLICY_KEY,
-      PLAYLIST_REF_ID
+      PLAYLIST_REF_ID,
     )
       .then(videos => {
         this.setState({
-          videos
+          videos,
         });
       })
       .catch(console.warn);
     BrightcovePlayerUtil.getOfflineVideoStatuses(ACCOUNT_ID, POLICY_KEY)
       .then(offlineVideos => {
         this.setState({
-          offlineVideos
+          offlineVideos,
         });
       })
       .catch(console.warn);
     this.disposer = BrightcovePlayerUtil.addOfflineNotificationListener(
       offlineVideos => {
         this.setState({
-          offlineVideos
+          offlineVideos,
         });
-      }
+      },
     );
   }
 
@@ -49,23 +60,23 @@ export default class App extends Component {
     BrightcovePlayerUtil.requestDownloadVideoWithVideoId(
       ACCOUNT_ID,
       POLICY_KEY,
-      videoId
+      videoId,
     ).catch(() => {});
   }
 
   play(item) {
     const downloadStatus = this.state.offlineVideos.find(
-      video => video.videoId === item.videoId
+      video => video.videoId === item.videoId,
     );
     this.setState({
       playback:
         downloadStatus && downloadStatus.downloadProgress === 1
           ? {
-            videoToken: downloadStatus.videoToken
-          }
+              videoToken: downloadStatus.videoToken,
+            }
           : {
-            referenceId: item.referenceId
-          }
+              referenceId: item.referenceId,
+            },
     });
   }
 
@@ -73,7 +84,7 @@ export default class App extends Component {
     BrightcovePlayerUtil.deleteOfflineVideo(
       ACCOUNT_ID,
       POLICY_KEY,
-      videoToken
+      videoToken,
     ).catch(console.warn);
   }
 
@@ -97,16 +108,15 @@ export default class App extends Component {
           extraData={this.state.offlineVideos}
           data={this.state.videos}
           keyExtractor={item => item.referenceId}
-          renderItem={({ item }) => {
+          renderItem={({item}) => {
             const downloadStatus = this.state.offlineVideos.find(
-              video => video.videoId === item.videoId
+              video => video.videoId === item.videoId,
             );
             return (
               <View style={styles.listItem}>
                 <TouchableOpacity
                   style={styles.mainButton}
-                  onPress={() => this.play(item)}
-                >
+                  onPress={() => this.play(item)}>
                   <BrightcovePlayerPoster
                     style={styles.poster}
                     accountId={ACCOUNT_ID}
@@ -121,8 +131,8 @@ export default class App extends Component {
                         {downloadStatus.downloadProgress === 1
                           ? 'OFFLINE PLAYBACK'
                           : `DOWNLOADING: ${Math.floor(
-                            downloadStatus.downloadProgress * 100
-                          )}%`}
+                              downloadStatus.downloadProgress * 100,
+                            )}%`}
                       </Text>
                     ) : null}
                     <Text style={styles.duration}>
@@ -139,14 +149,13 @@ export default class App extends Component {
                     } else {
                       this.delete(downloadStatus.videoToken);
                     }
-                  }}
-                >
+                  }}>
                   <Text>
                     {!downloadStatus
                       ? '💾'
                       : downloadStatus.downloadProgress === 1
-                        ? '🗑'
-                        : '⏳'}
+                      ? '🗑'
+                      : '⏳'}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -161,32 +170,32 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   video: {
     width: '100%',
-    height: 260
+    height: 260,
   },
   list: {
-    flex: 1
+    flex: 1,
   },
   listItem: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: 'lightgray'
+    borderBottomColor: 'lightgray',
   },
   mainButton: {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   body: {
     flex: 1,
     padding: 10,
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   name: {
     fontSize: 14,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   offlineBanner: {
     fontSize: 10,
@@ -194,20 +203,20 @@ const styles = StyleSheet.create({
     color: 'white',
     alignSelf: 'flex-start',
     padding: 3,
-    backgroundColor: 'deepskyblue'
+    backgroundColor: 'deepskyblue',
   },
   duration: {
     marginTop: 'auto',
-    opacity: 0.5
+    opacity: 0.5,
   },
   poster: {
     width: 100,
     height: 100,
-    backgroundColor: 'black'
+    backgroundColor: 'black',
   },
   downloadButton: {
     padding: 16,
     marginLeft: 'auto',
-    alignSelf: 'center'
-  }
+    alignSelf: 'center',
+  },
 });

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { BrightcovePlayer, BrightcovePlayerPoster, BrightcovePlayerUtil } from 'react-native-brightcove-player';
+import { BrightcovePlayer, BrightcovePlayerPoster, BrightcovePlayerUtil } from 'react-native-brightcove-ima-player';
 
 const ACCOUNT_ID = '5434391461001';
 const POLICY_KEY =

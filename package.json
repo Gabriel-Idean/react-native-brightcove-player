@@ -1,14 +1,14 @@
 {
-  "name": "react-native-brightcove-player",
+  "name": "react-native-brightcove-ima-player",
   "version": "1.7.0",
   "description": "A React Native implementation of Brightcove Player SDK.",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:manse/react-native-brightcove-player.git"
+    "url": "git@github.com:NZME/react-native-brightcove-player.git"
   },
   "bugs": {
-    "url": "https://github.com/manse/react-native-brightcove-player/issues"
+    "url": "https://github.com/NZME/react-native-brightcove-player/issues"
   },
   "keywords": [
     "react-native",
@@ -19,7 +19,7 @@
   ],
   "author": "Ryota Mannari <info@manse.jp> (https://github.com/manse)",
   "license": "MIT",
-  "homepage": "https://github.com/manse/react-native-brightcove-player",
+  "homepage": "https://github.com/NZME/react-native-brightcove-player",
   "dependencies": {
     "prop-types": "^15.5.10"
   }

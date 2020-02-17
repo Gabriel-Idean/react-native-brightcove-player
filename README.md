@@ -18,7 +18,7 @@
 ## Installation
 
 ```console
-yarn add react-native-brightcove-player
+yarn add react-native-brightcove-ima-player
 ```
 
 ### iOS
@@ -54,7 +54,7 @@ allprojects {
 ### BrightcovePlayer
 
 ```jsx
-import { BrightcovePlayer } from 'react-native-brightcove-player';
+import { BrightcovePlayer } from 'react-native-brightcove-ima-player';
 
 export default class App extends Component {
   render() {
@@ -107,7 +107,7 @@ export default class App extends Component {
 ### BrightcovePlayerPoster
 
 ```jsx
-import { BrightcovePlayerPoster } from 'react-native-brightcove-player';
+import { BrightcovePlayerPoster } from 'react-native-brightcove-ima-player';
 
 export default class App extends Component {
   render() {

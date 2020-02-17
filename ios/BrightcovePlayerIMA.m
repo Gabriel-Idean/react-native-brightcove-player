@@ -360,6 +360,7 @@
 
 -(void)dispose {
     [self.playbackController setVideos:@[]];
+    self.playbackController = nil;
 }
 
 @end

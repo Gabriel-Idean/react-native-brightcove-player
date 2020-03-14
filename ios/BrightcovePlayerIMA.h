@@ -48,6 +48,7 @@
 
 -(void) setupWithSettings:(NSString*)settings;
 -(void) seekTo:(NSNumber *)time;
+-(void) toggleFullscreen:(BOOL)isFullscreen;
 -(void) pause;
 -(void) play;
 -(void) dispose;

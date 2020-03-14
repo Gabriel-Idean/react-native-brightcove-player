@@ -275,6 +275,14 @@ public class BrightcovePlayerIMAView extends RelativeLayout implements Lifecycle
 //        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(BrightcovePlayerIMAView.this.getId(), BrightcovePlayerIMAManager.EVENT_TOGGLE_ANDROID_FULLSCREEN, event);
     }
 
+    public void toggleFullscreen(boolean isFullscreen) {
+        if (isFullscreen) {
+            this.fullScreenHandler.openFullscreenDialog();
+        } else {
+            this.fullScreenHandler.closeFullscreenDialog();
+        }
+    }
+
     public void setVolume(float volume) {
         Map<String, Object> details = new HashMap<>();
         details.put(Event.VOLUME, volume);

@@ -43,6 +43,16 @@ RCT_CUSTOM_VIEW_PROPERTY(settings, NSDictionary, BrightcovePlayerIMA) {
         [view setupWithSettings:json];
     }
 }
+
+RCT_EXPORT_METHOD(toggleFullscreen:(nonnull NSNumber *)reactTag isFullscreen:(BOOL)isFullscreen) {
+    [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+        BrightcovePlayerIMA *player = (BrightcovePlayerIMA*)viewRegistry[reactTag];
+        if ([player isKindOfClass:[BrightcovePlayerIMA class]]) {
+            [player toggleFullscreen:isFullscreen];
+        }
+    }];
+}
+
 RCT_EXPORT_METHOD(seekTo:(nonnull NSNumber *)reactTag seconds:(nonnull NSNumber *)seconds) {
     [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
         BrightcovePlayerIMA *player = (BrightcovePlayerIMA*)viewRegistry[reactTag];
@@ -51,6 +61,7 @@ RCT_EXPORT_METHOD(seekTo:(nonnull NSNumber *)reactTag seconds:(nonnull NSNumber 
         }
     }];
 }
+
 RCT_EXPORT_METHOD(play:(nonnull NSNumber *)reactTag) {
     [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
         BrightcovePlayerIMA *player = (BrightcovePlayerIMA*)viewRegistry[reactTag];

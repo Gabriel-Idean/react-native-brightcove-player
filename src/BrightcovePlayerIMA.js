@@ -112,6 +112,22 @@ BrightcovePlayerIMA.prototype.seekTo = Platform.select({
   },
 });
 
+BrightcovePlayerIMA.prototype.toggleFullscreen = Platform.select({
+  ios: function(isFullscreen) {
+    NativeModules.BrightcovePlayerIMAManager.toggleFullscreen(
+      ReactNative.findNodeHandle(this),
+      isFullscreen,
+    );
+  },
+  android: function(isFullscreen) {
+    UIManager.dispatchViewManagerCommand(
+      ReactNative.findNodeHandle(this._root),
+      UIManager.BrightcovePlayerIMA.Commands.toggleFullscreen,
+      [isFullscreen],
+    );
+  },
+});
+
 BrightcovePlayerIMA.prototype.stopPlayback = Platform.select({
   ios: function() {
     //no method for ios

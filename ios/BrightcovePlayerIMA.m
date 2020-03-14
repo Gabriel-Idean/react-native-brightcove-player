@@ -213,6 +213,14 @@
     }];
 }
 
+-(void) toggleFullscreen:(BOOL)isFullscreen {
+    if (isFullscreen) {
+        [_playerView performScreenTransitionWithScreenMode:BCOVPUIScreenModeFull];
+    } else {
+        [_playerView performScreenTransitionWithScreenMode:BCOVPUIScreenModeNormal];
+    }
+}
+
 - (void)playbackController:(id<BCOVPlaybackController>)controller playbackSession:(id<BCOVPlaybackSession>)session didReceiveLifecycleEvent:(BCOVPlaybackSessionLifecycleEvent *)lifecycleEvent {
     if (lifecycleEvent.eventType == kBCOVPlaybackSessionLifecycleEventPlaybackBufferEmpty || lifecycleEvent.eventType == kBCOVPlaybackSessionLifecycleEventFail ||
         lifecycleEvent.eventType == kBCOVPlaybackSessionLifecycleEventError ||

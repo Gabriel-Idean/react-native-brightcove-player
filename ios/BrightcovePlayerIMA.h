@@ -29,6 +29,7 @@
 @property (nonatomic) float targetBitRate;
 @property (nonatomic) float targetPlaybackRate;
 @property (nonatomic) BOOL playbackServiceDirty;
+@property (nonatomic) NSTimeInterval currentVideoDuration;
 
 @property (nonatomic, copy) NSDictionary *settings;
 @property (nonatomic, copy) NSString *referenceId;

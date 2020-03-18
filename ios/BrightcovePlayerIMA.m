@@ -246,13 +246,23 @@
         }
     } else if (lifecycleEvent.eventType == kBCOVPlaybackSessionLifecycleEventPause) {
         _playing = false;
+        if (self.currentVideoDuration) {
+            int curDur = (int)self.currentVideoDuration;
+            int curTime = (int)CMTimeGetSeconds([session.player currentTime]);
+            if (curDur == curTime) {
+                if (self.onEnd) {
+                    self.onEnd(@{});
+                }
+            }
+        }
+        
         if (self.onPause) {
             self.onPause(@{});
         }
     } else if (lifecycleEvent.eventType == kBCOVPlaybackSessionLifecycleEventEnd) {
-        if (self.onEnd) {
-            self.onEnd(@{});
-        }
+//        if (self.onEnd) {
+//            self.onEnd(@{});
+//        }
     }
     
     NSString *type = lifecycleEvent.eventType;
@@ -291,6 +301,7 @@
 }
 
 - (void)playbackController:(id<BCOVPlaybackController>)controller playbackSession:(id<BCOVPlaybackSession>)session didChangeDuration:(NSTimeInterval)duration {
+    self.currentVideoDuration = duration;
     if (self.onChangeDuration) {
         self.onChangeDuration(@{
                                 @"duration": @(duration)

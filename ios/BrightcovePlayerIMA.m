@@ -16,7 +16,7 @@
 
 - (void)setupWithSettings:(NSDictionary*)settings {
     /* added */
-    NSString * kViewControllerIMAPublisherID = [settings objectForKey:@"publisherProvidedID"] != nil ? publisherProvidedID : nil;
+    NSString * kViewControllerIMAPublisherID = [settings objectForKey:@"publisherProvidedID"];
     NSString * kViewControllerIMALanguage = @"en";
     
     IMASettings *imaSettings = [[IMASettings alloc] init];

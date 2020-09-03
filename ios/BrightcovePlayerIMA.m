@@ -16,11 +16,13 @@
 
 - (void)setupWithSettings:(NSDictionary*)settings {
     /* added */
-    NSString * kViewControllerIMAPublisherID = @"insertyourpidhere";
+    NSString * kViewControllerIMAPublisherID = [settings objectForKey:@"publisherProvidedID"] != nil ? publisherProvidedID : nil;
     NSString * kViewControllerIMALanguage = @"en";
     
     IMASettings *imaSettings = [[IMASettings alloc] init];
-    imaSettings.ppid = kViewControllerIMAPublisherID;
+    if (kViewControllerIMAPublisherID != nil) {
+        imaSettings.ppid = kViewControllerIMAPublisherID;
+    }
     imaSettings.language = kViewControllerIMALanguage;
     
     IMAAdsRenderingSettings *renderSettings = [[IMAAdsRenderingSettings alloc] init];
